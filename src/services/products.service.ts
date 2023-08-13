@@ -1,6 +1,6 @@
 import ProductModel, { ProductInputtableTypes } from '../database/models/product.model';
 import { Product } from '../types/Product';
-import { ServiceResponse } from '../types/ServiceResponse';
+import { Arr, ServiceResponse } from '../types/ServiceResponse';
 
 function validateParams(
   { name, price, orderId }:ProductInputtableTypes,
@@ -29,6 +29,13 @@ async function create(
   return responseService;
 }
 
+async function list(): Promise<ServiceResponse<Arr>> {
+  const responseModel = await ProductModel.findAll();
+  const arrProducts: Arr = responseModel;
+  return { status: 'SUCCESSFUL', data: arrProducts };
+}
+
 export default {
   create,
+  list,
 };

@@ -10,6 +10,12 @@ async function create(req: Request, res: Response) {
   return res.status(201).json(data);
 }
 
+async function list(_req: Request, res: Response) {
+  const { status, data } = await productsService.list();
+  return res.status(status !== 'SUCCESSFUL' ? 500 : 200).json(data);
+}
+
 export default {
   create,
+  list,
 };

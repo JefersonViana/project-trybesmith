@@ -3,6 +3,8 @@ import sinon from 'sinon';
 
 import ProductModel from '../../../src/database/models/product.model';
 import productService from '../../../src/services/products.service';
+import { allProductsFromDb, allProductsForComparison } from '../../mocks/products.mock';
+
 const product = {
   name: 'Martelo de Thor',
   price: '30 peças de ouro',
@@ -64,5 +66,14 @@ describe('ProductsService', function () {
       status: 'INVALID_DATA',
       data: { message: 'orderId is required' }
     });
+  });
+
+  it('Caso de Sucesso! - GET ALL PRODUCTS', async function () {
+    const productInstance = allProductsFromDb.map((prod) => ProductModel.build(prod))
+    sinon.stub(ProductModel, 'findAll').resolves(productInstance);
+    const responseService = await productService.list();
+    
+    expect(responseService.status).to.be.deep.equal('SUCCESSFUL');
+    expect(responseService.data).to.have.length(5);
   });
 });
