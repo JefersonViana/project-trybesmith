@@ -31,40 +31,38 @@ describe('ProductsService', function () {
 
   it('Caso de Falha com name! - PRODUCTS', async function () {
     const responseService = await productService.create({
-      name: '',
       price: '30 peças de ouro',
       orderId: 4
-    });
+    } as any);
 
     expect(responseService).to.be.deep.equal({
       status: 'INVALID_DATA',
-      data: { message: 'name is required' }
+      data: { message: '"name" is required' }
     });
   });
 
   it('Caso de Falha com price! - PRODUCTS', async function () {
     const responseService = await productService.create({
       name: 'Martelo de Thor',
-      price: '',
       orderId: 4
-    });
+    } as any);
 
     expect(responseService).to.be.deep.equal({
       status: 'INVALID_DATA',
-      data: { message: 'price is required' }
+      data: { message: '"price" is required' }
     });
   });
 
-  it('Caso de Falha com orderId! - PRODUCTS', async function () {
+  it('Caso de Falha com price.length menor que 3! - PRODUCTS', async function () {
     const responseService = await productService.create({
       name: 'Martelo de Thor',
-      price: '30 peças de ouro',
+      price: '30',
       orderId: 0
     });
 
     expect(responseService).to.be.deep.equal({
-      status: 'INVALID_DATA',
-      data: { message: 'orderId is required' }
+      status: 'INVALID_VALUE',
+      data: { message: '"price" length must be at least 3 characters long' }
     });
   });
 

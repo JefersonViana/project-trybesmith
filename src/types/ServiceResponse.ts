@@ -1,6 +1,6 @@
 import { ProductSequelizeModel } from '../database/models/product.model';
 
-type ServiceResponseErrorType = 'INVALID_DATA' | 'UNAUTHORIZED' | 'NOT_FOUND';
+type ServiceResponseErrorType = 'INVALID_DATA' | 'UNAUTHORIZED' | 'NOT_FOUND' | 'INVALID_VALUE';
 
 export type ServiceResponseError = {
   status: ServiceResponseErrorType, 
