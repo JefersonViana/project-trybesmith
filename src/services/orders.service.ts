@@ -10,7 +10,7 @@ async function list(): Promise<ServiceResponse<unknown[]>> {
         attributes: ['id'] },
     ],
   });
-
+  
   const newArr = responseModel.map(({ dataValues }) => ({
     id: dataValues.id,
     userId: dataValues.userId,
