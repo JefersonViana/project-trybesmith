@@ -2,7 +2,7 @@ import ProductModel, { ProductInputtableTypes } from '../database/models/product
 import { Product } from '../types/Product';
 import { Arr, ServiceResponse } from '../types/ServiceResponse';
 import check from '../utils/checkRequiredField';
-import userSchema from '../utils/schemas';
+import { userSchema } from '../utils/schemas';
 
 async function create(
   product: ProductInputtableTypes,

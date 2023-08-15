@@ -5,4 +5,9 @@ const userSchema = Joi.object({
   price: Joi.string().min(3),
 });
 
-export default userSchema;
+const productSchema = Joi.array().items(Joi.number()).label('productIds');
+
+export {
+  userSchema,
+  productSchema,
+};

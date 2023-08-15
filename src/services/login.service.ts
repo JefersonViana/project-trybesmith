@@ -1,9 +1,14 @@
 import bcrypt from 'bcryptjs';
 
-import UserModel from '../database/models/user.model';
+import UserModel, { UserSequelizeModel } from '../database/models/user.model';
 import { ServiceResponse } from '../types/ServiceResponse';
 import { UserRequest } from '../types/User';
 import generateToken from '../utils/generateToken';
+
+async function getUserById(id: string): Promise<UserSequelizeModel | null> {
+  const user = await UserModel.findByPk(id);
+  return user;
+}
 
 async function getUser(
   user: UserRequest,
@@ -30,12 +35,5 @@ async function getUser(
 
 export default {
   getUser,
+  getUserById,
 };
-
-// if (!username || !password) {
-//   responseService = {
-//     status: 'INVALID_DATA',
-//     data: { message: '"username" and "password" are required' },
-//   };
-//   return responseService;
-// }
