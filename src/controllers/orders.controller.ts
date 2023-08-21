@@ -8,8 +8,8 @@ async function list(_req: Request, res: Response) {
 }
 
 async function create(req: Request, res: Response) {
-  const { userId } = req.body;
-  const { status, data } = await ordersService.create(userId);
+  const { userId, productIds } = req.body;
+  const { status, data } = await ordersService.create(userId, productIds);
   if (status !== 'SUCCESSFUL') return res.status(mapStatusHTTP(status)).json(data);
   return res.status(201).json(data);
 }

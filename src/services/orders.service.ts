@@ -1,6 +1,6 @@
 import OrderModel from '../database/models/order.model';
 import ProductModel from '../database/models/product.model';
-// import { UserSequelizeModel } from '../database/models/user.model';
+import sequelize from '../database/models/index';
 import { ServiceResponse } from '../types/ServiceResponse';
 import { User } from '../types/User';
 import user from './login.service';
@@ -23,15 +23,29 @@ async function list(): Promise<ServiceResponse<unknown[]>> {
   return { status: 'SUCCESSFUL', data: newArr };
 }
 
-async function create(id: string): Promise<ServiceResponse<User>> {
-  let responseService: ServiceResponse<User>;
+type Order = {
+  userId: number,
+  productIds: number[],
+};
+
+async function create(id:string, productIds:number[]): Promise<ServiceResponse<User | Order>> {
   const responseModel = await user.getUserById(id);
   if (!responseModel) {
-    responseService = { status: 'NOT_FOUND', data: { message: '"userId" not found' } };
-    return responseService;
+    return { status: 'NOT_FOUND', data: { message: '"userId" not found' } };
   }
-  responseService = { status: 'SUCCESSFUL', data: responseModel.dataValues };
-  return responseService;
+  try {
+    await sequelize.transaction(async (t) => {
+      const createOrder = await OrderModel.create({ userId: Number(id) }, { transaction: t });
+      await Promise.all(productIds.map((productId:number) => (
+        ProductModel.update(
+          { orderId: createOrder.dataValues.id },
+          { where: { id: productId }, transaction: t },
+        ))));
+    });
+    return { status: 'SUCCESSFUL', data: { userId: Number(id), productIds } };
+  } catch (error) {
+    return { status: 'INVALID_DATA', data: { message: 'Fail in transaction' } };
+  }
 }
 
 export default {
