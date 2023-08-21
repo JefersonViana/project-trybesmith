@@ -39,4 +39,35 @@ describe('OrdersController', function () {
     expect(res.json).to.has.been.calledWith({ message: 'Orders not found' });
   });
 
+  it('Caso de Falha para criar um pedido! - ORDERS', async function () {
+    sinon.stub(ordersService, 'create').resolves({
+      status: 'NOT_FOUND',
+      data: { message: '"userId" not found' },
+    });
+    const request = {
+      body: {
+        userId: 10,
+        productIds: [1, 2],
+      }
+    } as Request;
+    await ordersController.create(request, res);
+    expect(res.status).to.has.been.calledWith(404);
+    expect(res.json).to.has.been.calledWith({ message: '"userId" not found' });
+  });
+
+  it('Caso de Sucesso para criar um pedido! - ORDERS', async function () {
+    sinon.stub(ordersService, 'create').resolves({
+      status: 'SUCCESSFUL',
+      data: { userId: 2, productIds: [1, 2] },
+    });
+    const request = {
+      body: {
+        userId: 2,
+        productIds: [1, 2],
+      }
+    } as Request;
+    await ordersController.create(request, res);
+    expect(res.status).to.has.been.calledWith(201);
+    expect(res.json).to.has.been.calledWith({ userId: 2, productIds: [1, 2] });
+  });
 });

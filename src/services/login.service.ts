@@ -5,7 +5,7 @@ import { ServiceResponse } from '../types/ServiceResponse';
 import { UserRequest } from '../types/User';
 import generateToken from '../utils/generateToken';
 
-async function getUserById(id: string): Promise<UserSequelizeModel | null> {
+async function getUserById(id: string | number): Promise<UserSequelizeModel | null> {
   const user = await UserModel.findByPk(id);
   return user;
 }

@@ -28,24 +28,20 @@ type Order = {
   productIds: number[],
 };
 
-async function create(id:string, productIds:number[]): Promise<ServiceResponse<User | Order>> {
+async function create(id:number, productIds:number[]): Promise<ServiceResponse<User | Order>> {
   const responseModel = await user.getUserById(id);
   if (!responseModel) {
     return { status: 'NOT_FOUND', data: { message: '"userId" not found' } };
   }
-  try {
-    await sequelize.transaction(async (t) => {
-      const createOrder = await OrderModel.create({ userId: Number(id) }, { transaction: t });
-      await Promise.all(productIds.map((productId:number) => (
-        ProductModel.update(
-          { orderId: createOrder.dataValues.id },
-          { where: { id: productId }, transaction: t },
-        ))));
-    });
-    return { status: 'SUCCESSFUL', data: { userId: Number(id), productIds } };
-  } catch (error) {
-    return { status: 'INVALID_DATA', data: { message: 'Fail in transaction' } };
-  }
+  await sequelize.transaction(async (t) => {
+    const createOrder = await OrderModel.create({ userId: id }, { transaction: t });
+    await Promise.all(productIds.map((productId:number) => (
+      ProductModel.update(
+        { orderId: createOrder.dataValues.id },
+        { where: { id: productId }, transaction: t },
+      ))));
+  });
+  return { status: 'SUCCESSFUL', data: { userId: id, productIds } };
 }
 
 export default {

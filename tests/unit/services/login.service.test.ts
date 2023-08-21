@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import jwt from 'jsonwebtoken';
 import UserModel from '../../../src/database/models/user.model';
 import loginService from '../../../src/services/login.service';
+import { mockUser } from '../../mocks/user.mock';
 
 describe('LoginService', function () {
   beforeEach(function () { sinon.restore(); });
@@ -62,5 +63,14 @@ describe('LoginService', function () {
     expect(responseService.data).to.be.deep.equal({
       message: 'Username or password invalid',
     });
+  });
+  
+  it('Caso de Sucesso com UserId - LOGIN', async function () {
+    const userInstance = UserModel.build(mockUser);
+    sinon.stub(UserModel, 'findByPk').resolves(userInstance);
+    const responseService = await loginService.getUserById(1);
+
+    expect(responseService?.dataValues.id).to.be.equal(1);
+    expect(responseService?.dataValues).to.be.deep.equal(mockUser);
   });
 });
